@@ -20,7 +20,7 @@
 static const size_t CSIZE = sizeof(uint32_t);
 
 inline void *AlignedMalloc(size_t size, size_t alignment) {
-#if defined(_WIN32)
+#ifdef _MSC_VER
   return _aligned_malloc(size, alignment);
 #else
   void *p;
@@ -30,7 +30,7 @@ inline void *AlignedMalloc(size_t size, size_t alignment) {
 }
 
 inline void AlignedFree(void *p) {
-#if defined(_WIN32)
+#ifdef _MSC_VER
   _aligned_free(p);
 #else
   free(p);
@@ -100,19 +100,6 @@ class CodeArray {
   void operator=(const CodeArray &);
   bool isAllocType() const { return type_ == ALLOC_BUF || type_ == AUTO_GROW; }
 
-  // type of partially applied function for encoding
-  typedef std::function<uint32_t(int64_t)> EncFunc;
-
-  struct AddrInfo {
-    size_t codeOffset; // position to write
-    size_t jmpAddr;    // value to write
-    EncFunc encFunc;   // encoding function
-    AddrInfo(size_t _codeOffset, size_t _jmpAddr, EncFunc encFunc) : codeOffset(_codeOffset), jmpAddr(_jmpAddr), encFunc(encFunc) {}
-    uint32_t getVal() const { return encFunc((int64_t)(jmpAddr - codeOffset) * CSIZE); }
-  };
-
-  typedef std::list<AddrInfo> AddrInfoList;
-  AddrInfoList addrInfoList_;
   const Type type_;
 #ifdef XBYAK_USE_MMAP_ALLOCATOR
   MmapAllocator defaultAllocator_;
@@ -149,10 +136,6 @@ protected:
   void calcJmpAddress() {
     if (isCalledCalcJmpAddress_)
       return;
-    for (AddrInfoList::const_iterator i = addrInfoList_.begin(), ie = addrInfoList_.end(); i != ie; ++i) {
-      uint32_t disp = i->getVal();
-      rewrite(i->codeOffset, disp);
-    }
     isCalledCalcJmpAddress_ = true;
   }
 
@@ -193,7 +176,6 @@ public:
   bool setProtectModeRW(bool throwException = true) { return setProtectMode(PROTECT_RW, throwException); }
   void resetSize() {
     size_ = 0;
-    addrInfoList_.clear();
     isCalledCalcJmpAddress_ = false;
   }
   void clearCodeArray() {
@@ -241,7 +223,6 @@ public:
     uint32_t *const data = top_ + offset;
     *data = disp;
   }
-  void save(size_t offset, size_t jmpAddr, const EncFunc &encFunc) { addrInfoList_.push_back(AddrInfo(offset, jmpAddr, encFunc)); }
   bool isAutoGrow() const { return type_ == AUTO_GROW; }
   bool isCalledCalcJmpAddress() const { return isCalledCalcJmpAddress_; }
   /**
@@ -277,7 +258,7 @@ public:
     default:
       return false;
     }
-#if (defined(__GNUC__) || defined(__APPLE__)) && !defined(_WIN32)
+#if defined(__GNUC__) || defined(__APPLE__)
     size_t pageSize = inner::getPageSize();
     size_t iaddr = reinterpret_cast<size_t>(addr);
     size_t roundAddr = iaddr & ~(pageSize - static_cast<size_t>(1));
