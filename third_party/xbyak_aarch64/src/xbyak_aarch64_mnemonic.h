@@ -5554,7 +5554,11 @@ void CodeGenerator::addsvl(const XReg &rd, const XReg &rn, const int32_t imm6) {
 void CodeGenerator::bfmopa(const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegH &zn, const ZRegH &zm) { SmeHalfFloatOuterProd(true, false, za, pn, pm, zn, zm); }
 void CodeGenerator::bfmops(const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegH &zn, const ZRegH &zm) { SmeHalfFloatOuterProd(true, true, za, pn, pm, zn, zm); }
 void CodeGenerator::fmopa(const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegH &zn, const ZRegH &zm) { SmeHalfFloatOuterProd(false, false, za, pn, pm, zn, zm); }
+void CodeGenerator::fmopa(const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegS &zn, const ZRegS &zm) { SmeFloatOuterProd(false, za, pn, pm, zn, zm); }
+void CodeGenerator::fmopa(const ZARegD &za, const _PReg &pn, const _PReg &pm, const ZRegD &zn, const ZRegD &zm) { SmeDoubleOuterProd(false, za, pn, pm, zn, zm); }
 void CodeGenerator::fmops(const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegH &zn, const ZRegH &zm) { SmeHalfFloatOuterProd(false, true, za, pn, pm, zn, zm); }
+void CodeGenerator::fmops(const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegS &zn, const ZRegS &zm) { SmeFloatOuterProd(true, za, pn, pm, zn, zm); }
+void CodeGenerator::fmops(const ZARegD &za, const _PReg &pn, const _PReg &pm, const ZRegD &zn, const ZRegD &zm) { SmeDoubleOuterProd(true, za, pn, pm, zn, zm); }
 void CodeGenerator::ld1b(const _ZAHVReg &za0hv, const _PReg &pg, const AdrReg &adr) { SmeZahvContiLdStB(false, za0hv, pg, adr.getXm(), adr.getXn()); }
 void CodeGenerator::ld1b(const _ZAHVReg &za0hv, const _PReg &pg, const AdrNoOfs &adr) { SmeZahvContiLdStB(false, za0hv, pg, xzr, adr.getXn()); }
 void CodeGenerator::st1b(const _ZAHVReg &za0hv, const _PReg &pg, const AdrReg &adr) { SmeZahvContiLdStB(true, za0hv, pg, adr.getXm(), adr.getXn()); }

@@ -446,7 +446,10 @@ status_t brgemm_kernel_create(
     if (brg.is_dgmm) {
         CHECK(safe_ptr_assign<brgemm_kernel_t>(
                 *brg_kernel, new brdgmm_kernel_t(brg)));
-    } else {
+    } else if (brg.is_sme && !brg.with_bias && brg.type == brgemm_addr && !brg.attr->post_ops_.len()) {
+        CHECK(safe_ptr_assign<brgemm_kernel_t>(
+                *brg_kernel, new brgemm_sme_kernel_t(brg)));
+    } else if (brg.is_sve) {
         CHECK(safe_ptr_assign<brgemm_kernel_t>(
                 *brg_kernel, new brgemm_kernel_common_t(brg)));
     }

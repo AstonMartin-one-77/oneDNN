@@ -40,6 +40,8 @@ constexpr char hw_opt_fp[] = "hw.optional.floatingpoint";
 constexpr char hw_opt_neon[] = "hw.optional.neon";
 constexpr char hw_opt_crc[] = "hw.optional.armv8_crc32";
 constexpr char hw_opt_jscvt[] = "hw.optional.arm.FEAT_JSCVT";
+constexpr char hw_opt_sme[] = "hw.optional.arm.FEAT_SME";
+constexpr char hw_opt_sme_i16i64[] = "hw.optional.arm.FEAT_SME_I16I64";
 constexpr char hw_perflevel1_logicalcpu[] = "hw.perflevel1.logicalcpu";
 
 class CpuInfoMac : public CpuInfo {
@@ -51,6 +53,7 @@ public:
     setHwCap();
     setCacheHierarchy();
     setImplementer();
+    setSmeLen();
   }
 
 private:
@@ -128,6 +131,16 @@ private:
       throw Error(ERR_INTERNAL);
     else
       type_ |= (val == 1) ? (Type)XBYAK_AARCH64_HWCAP_JSCVT : 0;
+
+    if (sysctlbyname(hw_opt_sme, &val, &len, NULL, 0) != 0)
+      throw Error(ERR_INTERNAL);
+    else
+      type_ |= (val == 1) ? (Type)XBYAK_AARCH64_HWCAP_SME : 0;
+
+    if (sysctlbyname(hw_opt_sme_i16i64, &val, &len, NULL, 0) != 0)
+      throw Error(ERR_INTERNAL);
+    else
+      type_ |= (val == 1) ? (Type)XBYAK_AARCH64_HWCAP_SME_I16I64 : 0;
   }
 
   void setNumCores() {

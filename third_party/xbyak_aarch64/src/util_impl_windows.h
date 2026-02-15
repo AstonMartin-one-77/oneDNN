@@ -44,6 +44,7 @@ public:
     setHwCap();
     setCacheHierarchy();
     setImplementer();
+    setSmeLen();
   }
 
 private:
@@ -109,6 +110,14 @@ private:
       type_ |= (Type)XBYAK_AARCH64_HWCAP_CRC;
     if (IsProcessorFeaturePresent(PF_ARM_V83_JSCVT_INSTRUCTIONS_AVAILABLE))
       type_ |= (Type)XBYAK_AARCH64_HWCAP_JSCVT;
+#ifdef PF_ARM_SME_INSTRUCTIONS_AVAILABLE
+    if (IsProcessorFeaturePresent(PF_ARM_SME_INSTRUCTIONS_AVAILABLE))
+      type_ |= (Type)XBYAK_AARCH64_HWCAP_SME;
+#endif
+#ifdef PF_ARM_SME_I16I64_INSTRUCTIONS_AVAILABLE
+    if (IsProcessorFeaturePresent(PF_ARM_SME_I16I64_INSTRUCTIONS_AVAILABLE))
+      type_ |= (Type)XBYAK_AARCH64_HWCAP_SME_I16I64;
+#endif
   }
 };
 

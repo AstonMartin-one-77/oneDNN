@@ -4335,6 +4335,21 @@ void CodeGenerator::SmeHalfFloatOuterProd(bool isBfloat16, bool isSubtract, cons
   dd(code);
 }
 
+// Float sum of outer products to float
+void CodeGenerator::SmeFloatOuterProd(bool isSubtract, const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegS &zn, const ZRegS &zm) {
+  verifyIncRange(pn.getIdx() | pm.getIdx(), 0, 7, ERR_ILLEGAL_REG_IDX);
+  verifyIncRange(za.getIdx(), 0, 3, ERR_ILLEGAL_REG_IDX);
+  uint32_t code = concat({F(0x101, 23), F(zm.getIdx(), 16), F(pm.getIdx(), 13), F(pn.getIdx(), 10), F(zn.getIdx(), 5), F(isSubtract, 4), F(za.getIdx(), 0)});
+  dd(code);
+}
+
+// Double sum of outer products to double
+void CodeGenerator::SmeDoubleOuterProd(bool isSubtract, const ZARegD &za, const _PReg &pn, const _PReg &pm, const ZRegD &zn, const ZRegD &zm) {
+  verifyIncRange(pn.getIdx() | pm.getIdx(), 0, 7, ERR_ILLEGAL_REG_IDX);
+  uint32_t code = concat({F(0x203, 22), F(zm.getIdx(), 16), F(pm.getIdx(), 13), F(pn.getIdx(), 10), F(zn.getIdx(), 5), F(isSubtract, 4), F(za.getIdx(), 0)});
+  dd(code);
+}
+
 void CodeGenerator::SmeZahvContiLdStB(bool isStore, const _ZAHVReg &za0hv, const _PReg &pg, const XReg &xm, const XReg &xn) {
   int32_t wsIdxPacked = za0hv.getWsIdx()-12;
   verifyIncRange(wsIdxPacked, 0, 3, ERR_ILLEGAL_REG_IDX);

@@ -45,6 +45,12 @@
 #ifndef HWCAP2_BF16
 #define HWCAP2_BF16 (1UL << 14)
 #endif
+#ifndef HWCAP2_SME
+#define HWCAP2_SME (1UL << 23)
+#endif
+#ifndef HWCAP2_SME_I16I64
+#define HWCAP2_SME_I16I64	(1UL << 24)
+#endif
 #endif
 
 namespace Xbyak_aarch64 {
@@ -69,6 +75,7 @@ public:
     setHwCap();
     setCacheHierarchy();
     setImplementer();
+    setSmeLen();
   }
 
 private:
@@ -416,6 +423,10 @@ private:
     const unsigned long hwcap2 = getauxval(AT_HWCAP2);
     if (hwcap2 & HWCAP2_BF16)
       type_ |= (Type)XBYAK_AARCH64_HWCAP_BF16;
+    if (hwcap2 & HWCAP2_SME)
+      type_ |= (Type)XBYAK_AARCH64_HWCAP_SME;
+    if (hwcap2 & HWCAP2_SME_I16I64)
+      type_ |= (Type)XBYAK_AARCH64_HWCAP_SME_I16I64;
 #endif
 
 #ifdef HWCAP_SVE

@@ -65,6 +65,8 @@ enum hwCap_t {
   XBYAK_AARCH64_HWCAP_BF16 = 1 << 5,
   XBYAK_AARCH64_HWCAP_CRC = 1 << 6,
   XBYAK_AARCH64_HWCAP_JSCVT = 1 << 7,
+  XBYAK_AARCH64_HWCAP_SME = 1 << 8,
+  XBYAK_AARCH64_HWCAP_SME_I16I64 = 1 << 9
 };
 
 struct implementer_t {
@@ -92,6 +94,7 @@ public:
   uint32_t getNumCores(Arm64CpuTopologyLevel level) const;
   Type getType() const;
   uint64_t getSveLen() const;
+  uint64_t getSmeLen() const;
   bool has(Type type) const;
   bool isAtomicSupported() const;
   bool isBf16Supported() const;

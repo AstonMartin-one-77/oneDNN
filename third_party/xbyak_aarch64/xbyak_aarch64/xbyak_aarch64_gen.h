@@ -663,6 +663,8 @@ class CodeGenerator : public CodeArray {
   void SmeAddPredVec(bool isVertical, const _ZAReg &za, const _PReg &pn, const _PReg &pm, const _ZReg &zn);
   void SmeAddMultiplySSRegSize(bool isPredicate, const XReg &rd, const XReg &rn, const int32_t imm6);
   void SmeHalfFloatOuterProd(bool isBfloat16, bool isSubtract, const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegH &zn, const ZRegH &zm);
+  void SmeFloatOuterProd(bool isSubtract, const ZARegS &za, const _PReg &pn, const _PReg &pm, const ZRegS &zn, const ZRegS &zm);
+  void SmeDoubleOuterProd(bool isSubtract, const ZARegD &za, const _PReg &pn, const _PReg &pm, const ZRegD &zn, const ZRegD &zm);    
   void SmeZahvContiLdStB(bool isStore, const _ZAHVReg &za0hv, const _PReg &pg, const XReg &xm, const XReg &xn);
   void SmeZahvContiLdStH(bool isStore, const _ZAHVReg &zahv, const _PReg &pg, const XReg &xm, const XReg &xn);
   void SmeZahvContiLdStW(bool isStore, const _ZAHVReg &zahv, const _PReg &pg, const XReg &xm, const XReg &xn);
